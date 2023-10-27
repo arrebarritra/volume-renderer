@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 #include <stb_image/stb_image.h>
 
 #include <iostream>
@@ -11,54 +11,52 @@
 // -------------------------------------------------
 unsigned int cubeVAO = 0;
 unsigned int cubeVBO = 0;
-void renderCube()
-{
+void renderCube() {
 	// initialize (if necessary)
-	if (cubeVAO == 0)
-	{
+	if (cubeVAO == 0) {
 		float vertices[] = {
 			// back face
 			-1.0f, -1.0f, -1.0f, // bottom-left
-			 1.0f,  1.0f, -1.0f, // top-right
-			 1.0f, -1.0f, -1.0f, // bottom-right         
-			 1.0f,  1.0f, -1.0f, // top-right
+			1.0f, 1.0f, -1.0f,   // top-right
+			1.0f, -1.0f, -1.0f,  // bottom-right
+			1.0f, 1.0f, -1.0f,   // top-right
 			-1.0f, -1.0f, -1.0f, // bottom-left
-			-1.0f,  1.0f, -1.0f, // top-left
-			// front face	   
-			-1.0f, -1.0f,  1.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f, // top-right
-			 1.0f,  1.0f,  1.0f, // top-right
-			-1.0f,  1.0f,  1.0f, // top-left
-			-1.0f, -1.0f,  1.0f, // bottom-left
-			// left face	   
-			-1.0f,  1.0f,  1.0f, // top-right
-			-1.0f,  1.0f, -1.0f, // top-left
+			-1.0f, 1.0f, -1.0f,  // top-left
+			// front face
+			-1.0f, -1.0f, 1.0f, // bottom-left
+			1.0f, -1.0f, 1.0f,  // bottom-right
+			1.0f, 1.0f, 1.0f,   // top-right
+			1.0f, 1.0f, 1.0f,   // top-right
+			-1.0f, 1.0f, 1.0f,  // top-left
+			-1.0f, -1.0f, 1.0f, // bottom-left
+			// left face
+			-1.0f, 1.0f, 1.0f,   // top-right
+			-1.0f, 1.0f, -1.0f,  // top-left
 			-1.0f, -1.0f, -1.0f, // bottom-left
 			-1.0f, -1.0f, -1.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f, // bottom-right
-			-1.0f,  1.0f,  1.0f, // top-right
-			// right face	   
-			 1.0f,  1.0f,  1.0f, // top-left
-			 1.0f, -1.0f, -1.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f, // top-right         
-			 1.0f, -1.0f, -1.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f, // top-left
-			 1.0f, -1.0f,  1.0f, // bottom-left     
-			// bottom face	   
+			-1.0f, -1.0f, 1.0f,  // bottom-right
+			-1.0f, 1.0f, 1.0f,   // top-right
+								 // right face
+			1.0f, 1.0f, 1.0f,    // top-left
+			1.0f, -1.0f, -1.0f,  // bottom-right
+			1.0f, 1.0f, -1.0f,   // top-right
+			1.0f, -1.0f, -1.0f,  // bottom-right
+			1.0f, 1.0f, 1.0f,    // top-left
+			1.0f, -1.0f, 1.0f,   // bottom-left
+			// bottom face
 			-1.0f, -1.0f, -1.0f, // top-right
-			 1.0f, -1.0f, -1.0f, // top-left
-			 1.0f, -1.0f,  1.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f, // bottom-right
+			1.0f, -1.0f, -1.0f,  // top-left
+			1.0f, -1.0f, 1.0f,   // bottom-left
+			1.0f, -1.0f, 1.0f,   // bottom-left
+			-1.0f, -1.0f, 1.0f,  // bottom-right
 			-1.0f, -1.0f, -1.0f, // top-right
-			// top face		  
-			-1.0f,  1.0f, -1.0f, // top-left
-			 1.0f,  1.0f , 1.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f, // top-right     
-			 1.0f,  1.0f,  1.0f, // bottom-right
-			-1.0f,  1.0f, -1.0f, // top-left
-			-1.0f,  1.0f,  1.0f  // bottom-left        
+			// top face
+			-1.0f, 1.0f, -1.0f, // top-left
+			1.0f, 1.0f, 1.0f,   // bottom-right
+			1.0f, 1.0f, -1.0f,  // top-right
+			1.0f, 1.0f, 1.0f,   // bottom-right
+			-1.0f, 1.0f, -1.0f, // top-left
+			-1.0f, 1.0f, 1.0f   // bottom-left
 		};
 		glGenVertexArrays(1, &cubeVAO);
 		glGenBuffers(1, &cubeVBO);
@@ -68,7 +66,8 @@ void renderCube()
 		// link vertex attributes
 		glBindVertexArray(cubeVAO);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+			(void*)0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
@@ -82,10 +81,8 @@ void renderCube()
 // ------------------------------------------------------------------
 unsigned int quadVAO = 0;
 unsigned int quadVBO;
-void renderQuad()
-{
-	if (quadVAO == 0)
-	{
+void renderQuad() {
+	if (quadVAO == 0) {
 		// positions
 		glm::vec3 pos1(-1.0f, 1.0f, 0.0f);
 		glm::vec3 pos2(-1.0f, -1.0f, 0.0f);
@@ -132,38 +129,54 @@ void renderQuad()
 		tangent2.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
 		tangent2.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 
-
 		bitangent2.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
 		bitangent2.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
 		bitangent2.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
 
-
 		float quadVertices[] = {
-			// positions            // normal         // texcoords  // tangent                          // bitangent
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
+			// positions            // normal         // texcoords  // tangent //
+			// bitangent
+			pos1.x,       pos1.y,       pos1.z,       nm.x,         nm.y,
+			nm.z,         uv1.x,        uv1.y,        tangent1.x,   tangent1.y,
+			tangent1.z,   bitangent1.x, bitangent1.y, bitangent1.z, pos2.x,
+			pos2.y,       pos2.z,       nm.x,         nm.y,         nm.z,
+			uv2.x,        uv2.y,        tangent1.x,   tangent1.y,   tangent1.z,
+			bitangent1.x, bitangent1.y, bitangent1.z, pos3.x,       pos3.y,
+			pos3.z,       nm.x,         nm.y,         nm.z,         uv3.x,
+			uv3.y,        tangent1.x,   tangent1.y,   tangent1.z,   bitangent1.x,
+			bitangent1.y, bitangent1.z,
 
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
-			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z
-		};
+			pos1.x,       pos1.y,       pos1.z,       nm.x,         nm.y,
+			nm.z,         uv1.x,        uv1.y,        tangent2.x,   tangent2.y,
+			tangent2.z,   bitangent2.x, bitangent2.y, bitangent2.z, pos3.x,
+			pos3.y,       pos3.z,       nm.x,         nm.y,         nm.z,
+			uv3.x,        uv3.y,        tangent2.x,   tangent2.y,   tangent2.z,
+			bitangent2.x, bitangent2.y, bitangent2.z, pos4.x,       pos4.y,
+			pos4.z,       nm.x,         nm.y,         nm.z,         uv4.x,
+			uv4.y,        tangent2.x,   tangent2.y,   tangent2.z,   bitangent2.x,
+			bitangent2.y, bitangent2.z };
 		// configure plane VAO
 		glGenVertexArrays(1, &quadVAO);
 		glGenBuffers(1, &quadVBO);
 		glBindVertexArray(quadVAO);
 		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices,
+			GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float),
+			(void*)0);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float),
+			(void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float),
+			(void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float),
+			(void*)(8 * sizeof(float)));
 		glEnableVertexAttribArray(4);
-		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float),
+			(void*)(11 * sizeof(float)));
 	}
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -172,15 +185,13 @@ void renderQuad()
 
 // utility function for loading a 2D texture from file
 // ---------------------------------------------------
-unsigned int loadTexture(char const* path)
-{
+unsigned int loadTexture(char const* path) {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-	if (data)
-	{
+	if (data) {
 		GLenum format;
 		if (nrComponents == 1)
 			format = GL_RED;
@@ -190,25 +201,32 @@ unsigned int loadTexture(char const* path)
 			format = GL_RGBA;
 
 		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
+			GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent semi-transparent borders. Due to interpolation it takes texels from next repeat 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(
+			GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
+			format == GL_RGBA
+			? GL_CLAMP_TO_EDGE
+			: GL_REPEAT); // for this tutorial: use GL_CLAMP_TO_EDGE to prevent
+						  // semi-transparent borders. Due to interpolation it
+						  // takes texels from next repeat
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+			format == GL_RGBA ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		stbi_image_free(data);
 	}
-	else
-	{
+	else {
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
 
 	return textureID;
 }
-
 
 // utility function for loading a cubemap from face textures
 // ---------------------------------------------------------
@@ -219,15 +237,16 @@ unsigned int loadCubemap(std::vector<std::string> faces) {
 
 	int width, height, nrChannels;
 	for (unsigned int i = 0; i < faces.size(); i++) {
-		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		unsigned char* data =
+			stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
 		if (data) {
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-			);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height,
+				0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			stbi_image_free(data);
 		}
 		else {
-			std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+			std::cout << "Cubemap tex failed to load at path: " << faces[i]
+				<< std::endl;
 			stbi_image_free(data);
 		}
 	}
@@ -237,6 +256,47 @@ unsigned int loadCubemap(std::vector<std::string> faces) {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
+}
+
+// utility function for loading volume data
+// ----------------------------------------
+unsigned int loadVolumeData(const char* path) {
+	FILE* fp;
+	errno_t e = fopen_s(&fp, path, "rb");
+	
+	if (e != 0) {
+		printf_s("Error %d: Couldn't open file %s", e, path);
+		return 0;
+	}
+
+	unsigned short vuSize[3];
+	fread((void*)vuSize, 3, sizeof(unsigned short), fp);
+
+	int uCount = int(vuSize[0]) * int(vuSize[1]) * int(vuSize[2]);
+	unsigned short* pData = new unsigned short[uCount];
+	fread((void*)pData, uCount, sizeof(unsigned short), fp);
+
+	fclose(fp);
+
+	float* pDataFloat = new float[uCount];
+	for (int i = 0; i < uCount; i++) {
+		pDataFloat[i] = pData[i] / 500000.0f;
+	}
+	delete[] pData;
+
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_3D, textureID);
+
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, vuSize[0], vuSize[1], vuSize[2], 0,
+		GL_RED, GL_FLOAT, pDataFloat);
+
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	delete[] pDataFloat;
 
 	return textureID;
 }

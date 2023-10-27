@@ -75,16 +75,22 @@ int main()
 		return -1;
 	}
 
-	// configure global opengl state
-	// -----------------------------
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LEQUAL);
-
-	// shaders
+	// load shaders
+	// ------------
+	Shader volume("src/shaders/volume.vert", "src/shaders/volume.frag");
 	Shader lighting("src/shaders/lighting.vert", "src/shaders/lighting.frag");
 	Shader skyboxShader("src/shaders/skybox.vert", "src/shaders/skybox.frag");
 
 	// shader configuration
+	// --------------------
+
+	// volume
+	volume.use();
+
+	unsigned int volumeTexture = loadVolumeData("resources/volumes/present246x246x221.dat");
+	volume.setInt("volume", 0);
+
+	// lighting
 	lighting.use();
 
 	Material grassMat("resources/textures/grass", "jpg");
@@ -96,6 +102,7 @@ int main()
 	model = glm::rotate(model, -glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f));
 	lighting.setMat4("model", model);
 
+	// skybox
 	skyboxShader.use();
 	std::vector<std::string> skyboxFaces
 	{
@@ -137,6 +144,12 @@ int main()
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 500.0f);
 		glm::mat4 view = camera.GetViewMatrix();
 
+		// render opaque objects
+		// --------------------
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glDepthFunc(GL_LEQUAL);
+
 		// render plane
 		lighting.use();
 		lighting.setMat4("projection", projection);
@@ -155,6 +168,28 @@ int main()
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
 		renderCube();
+
+		// render transparent objects
+		// --------------------------
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		// render volume
+		volume.use();
+		volume.setMat4("projection", projection);
+		volume.setMat4("view", view);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_3D, volumeTexture);
+
+		int samples = 100;
+		glm::mat4 modelVol(1.0f);
+		for (int i = 0; i < samples; i++) {
+			float z = -1.0f + 2.0f * (i / (float)(samples - 1));
+			volume.setMat4("model", glm::translate(modelVol, glm::vec3(0.0f, 0.0f, z)));
+			renderQuad();
+		}
 
 		gui->Render(lightDir);
 

@@ -15,6 +15,12 @@ Volume::Volume(const char* path, int samples) : samples(samples)
 {
 	loadVolumeData(path);
 
+	transformCoords = glm::mat4(1.0f);
+	// rotate model so axes correspond to OpenGL axes
+	transformCoords = glm::rotate(transformCoords, glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f));
+	// stretch bounding cube to match volume aspect ratio
+	transformCoords = glm::scale(transformCoords, glm::vec3(dims[0] / (float)dims[2], dims[1] / (float)dims[2], 1.0f));
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
@@ -37,11 +43,11 @@ void Volume::Render(const glm::mat4& projection, const glm::mat4& modelview)
 	glm::vec3 viewAlignedBBoxCorners[8];
 	glm::vec2 zRange;
 
-	getViewAlignedBBoxCorners(modelview, viewAlignedBBoxCorners);
+	getViewAlignedBBoxCorners(modelview *  transformCoords, viewAlignedBBoxCorners);
 	getZRange(viewAlignedBBoxCorners, zRange);
 
 	// vertices + indices of all sample polygons
-	glm::mat4 modelviewinv = glm::inverse(modelview);
+	glm::mat4 modelviewinv = glm::inverse(modelview * transformCoords);
 	std::vector<SamplePolygonVertex> vertices; vertices.reserve(6 * samples);
 	std::vector<int> start; start.reserve(samples);
 	std::vector<int> count; count.reserve(samples);

@@ -37,6 +37,7 @@ public:
 	float alphaScale = 1.0f;
 
 private:
+	glm::mat4 transformCoords;	// transform from volume coordinate system to our coordinate system
 	unsigned int VAO, VBO;
 	unsigned int textureID;
 

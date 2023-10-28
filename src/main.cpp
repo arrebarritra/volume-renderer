@@ -114,7 +114,7 @@ int main()
 
 	// Load volume
 	// -----------
-	Volume volume("resources/volumes/stagbeetle832x832x494.dat");
+	Volume volume("resources/volumes/present246x246x221.dat");
 
 	// Initialise GUI
 	gui = new GUI(window);

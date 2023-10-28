@@ -28,10 +28,11 @@ Volume::Volume(const char* path, int samples) : samples(samples)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SamplePolygonVertex), (void*)offsetof(SamplePolygonVertex, SamplePolygonVertex::texcoord));
 
-	glBindVertexArray(0);
+	shader.use();
+	shader.setInt("volume", 0);
 }
 
-void Volume::Render(glm::mat4& modelview)
+void Volume::Render(const glm::mat4& projection, const glm::mat4& modelview)
 {
 	glm::vec3 viewAlignedBBoxCorners[8];
 	glm::vec2 zRange;
@@ -62,7 +63,10 @@ void Volume::Render(glm::mat4& modelview)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, textureID);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	shader.use();
+	shader.setMat4("projection", projection);
+	shader.setFloat("alphascale", alphaScale);
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(SamplePolygonVertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
@@ -90,10 +94,26 @@ void Volume::loadVolumeData(const char* path)
 
 	fclose(fp);
 
+	// iterate through data to process and obtain stats
 	float* pDataFloat = new float[uCount];
+	minVal = pData[0];
+	maxVal = pData[0];
+	mean = 0;
+	meanNonZero = 0;
+	int amountNonZero = 0;
 	for (int i = 0; i < uCount; i++) {
+		if (pData[i] < minVal) minVal = pData[i];
+		else if (pData[i] > maxVal) maxVal = pData[i];
+
+		mean += pData[i];
+		if (pData[i] > 0) {
+			amountNonZero++;
+			meanNonZero += pData[i];
+		}
 		pDataFloat[i] = pData[i] / 4095.0f;
 	}
+	mean /= uCount;
+	meanNonZero /= amountNonZero;
 	delete[] pData;
 
 	glGenTextures(1, &textureID);
@@ -108,13 +128,13 @@ void Volume::loadVolumeData(const char* path)
 
 }
 
-void Volume::getViewAlignedBBoxCorners(glm::mat4& modelview, glm::vec3(&viewAlignedBBoxCorners)[8])
+void Volume::getViewAlignedBBoxCorners(const glm::mat4& modelview, glm::vec3(&viewAlignedBBoxCorners)[8])
 {
 	for (int i = 0; i < 8; i++)
-		viewAlignedBBoxCorners[i] = modelview * BBoxCornerVertices[i];
+		viewAlignedBBoxCorners[i] = glm::vec3(modelview * BBoxCornerVertices[i]);
 }
 
-void Volume::getZRange(glm::vec3(&viewAlignedBBoxCorners)[8], glm::vec2& zRange)
+void Volume::getZRange(const glm::vec3(&viewAlignedBBoxCorners)[8], glm::vec2& zRange)
 {
 	zRange.x = viewAlignedBBoxCorners[0].z;
 	zRange.y = viewAlignedBBoxCorners[0].z;

@@ -3,10 +3,10 @@ out vec4 FragColor;
 
 in vec3 TexCoords;
 
-uniform usampler3D volume;
+uniform sampler3D volume;
+uniform float alphascale;
 
 void main(){
-    float alpha = texture(volume, TexCoords).r;
+    float alpha = texture(volume, TexCoords).r * alphascale;
     FragColor = vec4(vec3(1.0f), alpha);
 }
-

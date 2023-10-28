@@ -78,18 +78,12 @@ int main()
 
 	// load shaders
 	// ------------
-	Shader volumeShader("src/shaders/volume.vert", "src/shaders/volume.frag");
 	Shader lightingShader("src/shaders/lighting.vert", "src/shaders/lighting.frag");
 	Shader skyboxShader("src/shaders/skybox.vert", "src/shaders/skybox.frag");
 
 	// shader configuration
 	// --------------------
 
-	// volume
-	volumeShader.use();
-
-	Volume volume("resources/volumes/stagbeetle208x208x123.dat");
-	volumeShader.setInt("volume", 0);
 
 	// lighting
 	lightingShader.use();
@@ -117,6 +111,10 @@ int main()
 	};
 	unsigned int cubemapTexture = loadCubemap(skyboxFaces);
 	skyboxShader.setInt("cubemap", 0);
+
+	// Load volume
+	// -----------
+	Volume volume("resources/volumes/stagbeetle832x832x494.dat");
 
 	// Initialise GUI
 	gui = new GUI(window);
@@ -178,11 +176,9 @@ int main()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// render volume
-		volumeShader.use();
-		volumeShader.setMat4("projection", projection);
-		volume.Render(view);
+		volume.Render(projection, view);
 
-		gui->Render(lightDir, volume.samples);
+		gui->Render(lightDir, volume);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------

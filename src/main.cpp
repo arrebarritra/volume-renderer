@@ -6,6 +6,7 @@
 #include "util.h"
 #include "shader.h"
 #include "material.h"
+#include "volume.h"
 #include "camera.h"
 #include "gui.h"
 
@@ -26,7 +27,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 // camera
-Camera camera(glm::vec3(0.0f, 1.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -77,30 +78,31 @@ int main()
 
 	// load shaders
 	// ------------
-	Shader volume("src/shaders/volume.vert", "src/shaders/volume.frag");
-	Shader lighting("src/shaders/lighting.vert", "src/shaders/lighting.frag");
+	Shader volumeShader("src/shaders/volume.vert", "src/shaders/volume.frag");
+	Shader lightingShader("src/shaders/lighting.vert", "src/shaders/lighting.frag");
 	Shader skyboxShader("src/shaders/skybox.vert", "src/shaders/skybox.frag");
 
 	// shader configuration
 	// --------------------
 
 	// volume
-	volume.use();
+	volumeShader.use();
 
-	unsigned int volumeTexture = loadVolumeData("resources/volumes/present246x246x221.dat");
-	volume.setInt("volume", 0);
+	Volume volume("resources/volumes/stagbeetle208x208x123.dat");
+	volumeShader.setInt("volume", 0);
 
 	// lighting
-	lighting.use();
+	lightingShader.use();
 
 	Material grassMat("resources/textures/grass", "jpg");
-	Material::setShaderMaterial(lighting);
+	Material::setShaderMaterial(lightingShader);
 
-	lighting.setVec3("color", glm::vec3(1.0f));
+	lightingShader.setVec3("color", glm::vec3(1.0f));
 	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(10.0f, 1.0f, 10.0f));
 	model = glm::rotate(model, -glm::half_pi<float>(), glm::vec3(1.0f, 0.0f, 0.0f));
-	lighting.setMat4("model", model);
+	lightingShader.setMat4("model", model);
 
 	// skybox
 	skyboxShader.use();
@@ -151,11 +153,11 @@ int main()
 		glDepthFunc(GL_LEQUAL);
 
 		// render plane
-		lighting.use();
-		lighting.setMat4("projection", projection);
-		lighting.setMat4("view", view);
+		lightingShader.use();
+		lightingShader.setMat4("projection", projection);
+		lightingShader.setMat4("view", view);
 
-		lighting.setVec3("lightDir", lightDir);
+		lightingShader.setVec3("lightDir", lightDir);
 		grassMat.bind();
 
 		renderQuad();
@@ -176,20 +178,9 @@ int main()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// render volume
-		volume.use();
-		volume.setMat4("projection", projection);
-		volume.setMat4("view", view);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_3D, volumeTexture);
-
-		int samples = 100;
-		glm::mat4 modelVol(1.0f);
-		for (int i = 0; i < samples; i++) {
-			float z = -1.0f + 2.0f * (i / (float)(samples - 1));
-			volume.setMat4("model", glm::translate(modelVol, glm::vec3(0.0f, 0.0f, z)));
-			renderQuad();
-		}
+		volumeShader.use();
+		volumeShader.setMat4("projection", projection);
+		volume.Render(view);
 
 		gui->Render(lightDir);
 

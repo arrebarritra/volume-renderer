@@ -282,7 +282,7 @@ unsigned int loadVolumeData(const char* path) {
 
 	float* pDataFloat = new float[uCount];
 	for (int i = 0; i < uCount; i++) {
-		pDataFloat[i] = pData[i] / 500000.0f;
+		pDataFloat[i] = pData[i] / 40;
 	}
 	delete[] pData;
 

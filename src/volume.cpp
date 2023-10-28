@@ -71,9 +71,7 @@ void Volume::Render(const glm::mat4& projection, const glm::mat4& modelview)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(SamplePolygonVertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
 
-	// render back to front for correct transparency
-	for (int i = start.size() - 1; i > 0; i--)
-		glDrawArrays(GL_TRIANGLE_FAN, start[i], count[i]);
+	glMultiDrawArrays(GL_TRIANGLE_FAN, &start[0], &count[0], start.size());
 }
 
 void Volume::loadVolumeData(const char* path)

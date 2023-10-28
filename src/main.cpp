@@ -182,7 +182,7 @@ int main()
 		volumeShader.setMat4("projection", projection);
 		volume.Render(view);
 
-		gui->Render(lightDir);
+		gui->Render(lightDir, volume.samples);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------

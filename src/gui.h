@@ -27,7 +27,7 @@ public:
 		ImGui::DestroyContext();
 	}
 
-	void Render(glm::vec3& lightDir) {
+	void Render(glm::vec3& lightDir, int& samples) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -35,8 +35,11 @@ public:
 		ImGui::Begin("Settings");
 
 		if (ImGui::DragFloat3("Light direction", &lightDir[0], 0.1f)) {
+			if (lightDir == glm::vec3(0.0f)) lightDir = glm::vec3(0.0f, -1.0f, 0.0f);
 			lightDir = glm::normalize(lightDir);
 		}
+
+		ImGui::DragInt("Samples", &samples);
 
 		ImGui::End();
 

@@ -1,3 +1,6 @@
+# ignore imgui ini file
+imgui.ini
+
 # Ignore large volume data files
 /resources/volumes/*.dat
 

@@ -15,18 +15,20 @@ Volume::Volume(const char* path, int samples) : samples(samples)
 {
 	loadVolumeData(path);
 
-	glGenBuffers(1, &VAO);
+	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// reserve max possible size of buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(SamplePolygonVertex) * (6 * samples), NULL, GL_DYNAMIC_DRAW);
 
+	// positions
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(SamplePolygonVertex), (void*)offsetof(SamplePolygonVertex, SamplePolygonVertex::pos));
+	// texture coordinates
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(SamplePolygonVertex), (void*)offsetof(SamplePolygonVertex, SamplePolygonVertex::texcoord));
+
+	glBindVertexArray(0);
 }
 
 void Volume::Render(glm::mat4& modelview)
@@ -60,11 +62,13 @@ void Volume::Render(glm::mat4& modelview)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, textureID);
 
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBindVertexArray(VAO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(SamplePolygonVertex) * vertices.size(), &vertices[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(SamplePolygonVertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
 
 	// render back to front for correct transparency
-	for(int i = start.size() - 1; i > 0; i--)
+	for (int i = start.size() - 1; i > 0; i--)
 		glDrawArrays(GL_TRIANGLE_FAN, start[i], count[i]);
 }
 

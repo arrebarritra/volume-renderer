@@ -28,12 +28,12 @@ class Volume {
 public:
 	Volume(const char* path, int samples = 50);
 	void Render(glm::mat4& modelview);
+	int samples;
 
 private:
 	unsigned int VAO, VBO;
 	unsigned int textureID;
 	unsigned short dims[3];
-	int samples;
 
 	void loadVolumeData(const char* path);
 	void getViewAlignedBBoxCorners(glm::mat4& modelview, glm::vec3 (&viewAlignedBBoxCorners)[8]);
